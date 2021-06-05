@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rhett.mysecurity.mapper.SysRoleMapper">
+    <select id="findByUserId" parameterType="java.lang.Integer" resultType="org.rhett.mysecurity.entity.SysRole">
+        select
+            r.id, r.name, r.desc
+        from
+            sys_role as r
+        where
+            r.id
+        in
+            (
+                select
+                    ur.role_id
+                from
+                    sys_user_role as ur
+                where
+                    ur.user_id = #{userId}
+                )
+    </select>
+</mapper>

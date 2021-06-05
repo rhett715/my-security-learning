@@ -1,8 +1,72 @@
-# 应用服务 WEB 访问端口
-server:
-  port: 8090
-
 spring:
+  profiles:
+    active: dev
+
   application:
     name: my-security-learning
 
+  datasource:
+    type: com.zaxxer.hikari.util.DriverDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/my_security?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: root312
+    # druid连接池配置
+    #max-active: 100
+    #initial-size: 1
+    # 获取连接等待超时的时间，单位毫秒
+    #max-wait: 60000
+    #min-idle: 1
+    # 间隔多久进行一次检测，检测需要关闭的空闲连接，单位毫秒
+    #time-between-eviction-runs-millis: 60000
+    # 一个连接在连接池中最小的生存时间，单位毫秒
+    #min-evictable-idle-time-millis: 300000
+    #validation-query: select 'x'
+    #test-while-idle: true
+    #test-on-borrow: false
+    #test-on-return: false
+    #pool-prepared-statements: true
+    #max-open-prepared-statements: 50
+    #max-pool-prepared-statement-per-connection-size: 20
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，wall用于防火墙
+    #ilters: stat,wall,slf4j
+    # 合并多个DruidDataSource的监控数据
+    #use-global-data-source-stat: true
+    # 通过connection-properties属性打开mergeSql功能；慢SQL记录
+    #connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+
+  redis:
+    port: 6379
+    host: localhost
+    database: 0
+    timeout: 10000 # 连接超时时间，单位：毫秒
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 10
+        min-idle: 1
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true # 是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN（下划线命名） 到经典 Java 属性名 aColumn（驼峰命名） 的类似映射。
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+# 自定义的token相关信息
+jwt:
+  tokenSignKey: rgebeeit32e21grd32d54oe65ryesw23 # 密钥
+  tokenExpiration: 604800 # 有效期7天，单位：秒
+
+#自定义属性，配置私钥路径
+rsa:
+  key:
+    privateKeyPath: D:\auth_key\rsa_key
+    publicKeyPath: D:\auth_key\rsa_key.pub
