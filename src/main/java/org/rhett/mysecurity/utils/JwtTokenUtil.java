@@ -1,11 +1,12 @@
 package org.rhett.mysecurity.utils;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.rhett.mysecurity.constants.SysConstant;
 import org.rhett.mysecurity.exception.BusinessException;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -23,18 +24,26 @@ import java.util.Map;
  * @Description
  * JWT工具
  */
-@Component
-@ConfigurationProperties(prefix = "jwt")
 public class JwtTokenUtil {
     private static long tokenExpiration;
+
+    @Value("${jwt.tokenExpiration}")
+    public void setTokenExpiration(long tokenExpiration) {
+        JwtTokenUtil.tokenExpiration = tokenExpiration;
+    }
+
     private static String tokenSignKey;
+
+    @Value("${}")
+    public void setTokenSignKey(String tokenSignKey) {
+        JwtTokenUtil.tokenSignKey = tokenSignKey;
+    }
 
     private static Key getKeyInstance() {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
         byte[] bytes = DatatypeConverter.parseBase64Binary(tokenSignKey);
         return new SecretKeySpec(bytes, signatureAlgorithm.getJcaName());
     }
-
 
     /**
      * 生成用私钥加密的token
@@ -44,7 +53,7 @@ public class JwtTokenUtil {
      */
     public static String generateToken(UserDetails userDetails, PrivateKey privateKey) {
         //载荷包含自定义信息
-        Map<String, Object> claims = new HashMap<>();
+        Map<String, Object> claims = new HashMap<>(4);
         claims.put(SysConstant.JWT_USERNAME, userDetails.getUsername());
         claims.put(SysConstant.JWT_CREATED, new Date());
         claims.put(SysConstant.JWT_PAYLOAD_USER_KEY, JacksonUtil.toJsonString(userDetails));

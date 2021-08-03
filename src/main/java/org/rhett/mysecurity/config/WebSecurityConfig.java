@@ -5,7 +5,6 @@ import org.rhett.mysecurity.security.SysUserDetailsServiceImpl;
 import org.rhett.mysecurity.security.handler.*;
 import org.rhett.mysecurity.utils.rsa.RsaKeyProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -91,9 +90,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 //添加自定义的token验证过滤器
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), properties))
+                .addFilterBefore(new JwtAuthenticationFilter(authenticationManager(), properties), UsernamePasswordAuthenticationFilter.class)
                 //验证码过滤器
-                .addFilterBefore(kaptchaFilter, UsernamePasswordAuthenticationFilter.class)
+                //.addFilterBefore(kaptchaFilter, UsernamePasswordAuthenticationFilter.class)
                 // 授权未登录异常处理
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                 //权限不足处理

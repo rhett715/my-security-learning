@@ -13,8 +13,8 @@ public enum ResultCode {
     COMMON_ERROR(9999, "错误");
 
     @ApiModelProperty(value = "错误码")
-    private final Integer code;
+    private Integer code;
 
     @ApiModelProperty(value = "错误码")
-    private final String message;
+    private String message;
 }
